@@ -1,0 +1,78 @@
+{% extends "core/base.html" %}
+{% block title %}{{ object.title }} — GameForge{% endblock %}
+{% block content %}
+<article class="detail">
+  <header class="detail-head">
+    <div>
+      <h1>{{ object.title }}</h1>
+      <p class="muted">{{ object.genre }} • {{ object.ambiance }}</p>
+      <div class="actions">
+        <a class="btn ghost" href="{% url 'core:export_pdf' object.slug %}">Exporter PDF</a>
+        <form method="post" action="{% url 'core:toggle_favorite' object.slug %}">
+          {% csrf_token %}
+          <button class="btn">❤ Favori</button>
+        </form>
+      </div>
+    </div>
+  </header>
+
+  <section class="gallery">
+    {% if object.image_character %}
+      <figure><img src="{{ object.image_character.url }}" alt="Concept personnage"><figcaption>Personnage</figcaption></figure>
+    {% endif %}
+    {% if object.image_environment %}
+      <figure><img src="{{ object.image_environment.url }}" alt="Concept environnement"><figcaption>Environnement</figcaption></figure>
+    {% endif %}
+  </section>
+
+  <section class="grid-2">
+    <div>
+      <h2>Pitch</h2>
+      <p>{{ object.generated.pitch|default:"(non généré pour l’instant)" }}</p>
+
+      <h2>Univers</h2>
+      <p>{{ object.generated.universe|default:"(non généré)" }}</p>
+
+      <h2>Scénario</h2>
+      {% if object.generated.scenario %}
+        <ul class="list">
+          <li><strong>Acte 1 :</strong> {{ object.generated.scenario.act1 }}</li>
+          <li><strong>Acte 2 :</strong> {{ object.generated.scenario.act2 }}</li>
+          <li><strong>Acte 3 :</strong> {{ object.generated.scenario.act3 }}</li>
+        </ul>
+      {% else %}
+        <p class="muted">(non généré)</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <h2>Personnages</h2>
+      {% if object.generated.characters %}
+        <div class="cards">
+          {% for c in object.generated.characters %}
+          <div class="chip">
+            <h3>{{ c.name }} <span class="muted">— {{ c.class }}</span></h3>
+            <p class="muted">{{ c.role }}</p>
+            <p>{{ c.background }}</p>
+            <p><strong>Gameplay :</strong> {{ c.gameplay }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="muted">(non généré)</p>
+      {% endif %}
+
+      <h2>Lieux</h2>
+      {% if object.generated.locations %}
+        <ul class="list">
+          {% for l in object.generated.locations %}
+          <li><strong>{{ l.name }}</strong> — {{ l.description }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">(non généré)</p>
+      {% endif %}
+    </div>
+  </section>
+</article>
+{% endblock %}

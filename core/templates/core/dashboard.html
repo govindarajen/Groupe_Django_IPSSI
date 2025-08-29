@@ -1,0 +1,55 @@
+{% extends "core/base.html" %}
+{% block title %}Mon tableau de bord — GameForge{% endblock %}
+{% block content %}
+<div class="panel">
+  <div class="panel-head">
+    <h2>Mes projets</h2>
+    <div>
+      <a class="btn" href="{% url 'core:create' %}">Nouveau projet</a>
+      <a class="btn ghost" href="{% url 'core:explore_free' %}">Exploration libre</a>
+    </div>
+  </div>
+  <table class="table">
+    <thead><tr><th>Titre</th><th>Genre</th><th>Public</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for p in projects %}
+      <tr>
+        <td><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></td>
+        <td>{{ p.genre }}</td>
+        <td>{{ p.is_public|yesno:"Oui,Non" }}</td>
+        <td>
+          <button class="btn primary gen-btn" data-pid="{{ p.id }}">Générer IA</button>
+          <a class="btn ghost" href="{% url 'core:export_pdf' p.slug %}">PDF</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="muted">Aucun projet pour l’instant.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div id="loader" class="loader" hidden>
+  <div class="spinner"></div>
+  <div>Génération en cours…</div>
+</div>
+
+<script>
+document.querySelectorAll(".gen-btn").forEach(btn=>{
+  btn.addEventListener("click", async () => {
+    const pid = btn.dataset.pid;
+    const loader = document.getElementById("loader");
+    loader.hidden = false;
+    const resp = await fetch("{% url 'core:generate' %}", {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "X-CSRFToken": "{{ csrf_token }}"},
+      body: JSON.stringify({project_id: pid})
+    });
+    const data = await resp.json();
+    loader.hidden = true;
+    if(data.status === "ok"){ window.location.href = data.project_url; }
+    else{ alert(data.error || "Erreur inconnue."); }
+  });
+});
+</script>
+{% endblock %}

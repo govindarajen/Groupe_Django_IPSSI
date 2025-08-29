@@ -1,0 +1,32 @@
+{% extends "core/base.html" %}
+{% block title %}Mes favoris — GameForge{% endblock %}
+{% block content %}
+<section class="favorites-section">
+  <h2 class="section-title">Mes jeux favoris</h2>
+  
+  {% if projects %}
+  <div class="grid">
+    {% for p in projects %}
+    <div class="card">
+      <a href="{{ p.get_absolute_url }}">
+        <div class="card-thumb" style="background-image:url('{% if p.image_environment %}{{ p.image_environment.url }}{% else %}/static/core/images/default-thumbnail.jpg{% endif %}')">
+          <span class="favorite-icon active">♥</span>
+        </div>
+        <div class="card-body">
+          <h3>{{ p.title|default:"Sans titre" }}</h3>
+          <p class="card-meta">{{ p.genre|default:"Non spécifié" }} — par {{ p.author.username }}</p>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">★</div>
+    <h3>Aucun favori pour le moment</h3>
+    <p>Explorez les projets publics et ajoutez ceux qui vous plaisent à vos favoris.</p>
+    <a class="btn primary" href="{% url 'core:explore_free' %}">Découvrir des projets</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

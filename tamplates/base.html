@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>GameForge</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src="{% static 'js/script.js' %}" defer></script>
+</head>
+<body>
+<!-- Navbar -->
+<div class="navbar">
+<div class="logo">
+<a href="/">🎮 GameForge</a>
+</div>
+<div class="links">
+<a href="/">Accueil</a>
+<a href="/dashboard/">Tableau de bord</a>
+<a href="/favorites/">Favoris</a>
+<a href="/login/">Connexion</a>
+<a href="/signup/">Inscription</a>
+</div>
+</div>
+<!-- Contenu principal -->
+<div class="container">
+       {% block content %}
+<!-- Le contenu des pages sera injecté ici -->
+       {% endblock %}
+</div>
+<!-- Footer -->
+<div class="footer">
+<p>&copy; 2025 GameForge - Générateur de jeux vidéo par IA</p>
+</div>
+</body>
+</html>

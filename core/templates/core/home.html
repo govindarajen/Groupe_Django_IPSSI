@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+{% block title %}Accueil — GameForge{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <h1>Génère des concepts de jeux vidéo avec l'IA</h1>
+    <p>Univers cohérents, scénarios en 3 actes, personnages jouables, lieux emblématiques et visuels conceptuels.</p>
+    <div class="hero-buttons">
+      {% if user.is_authenticated %}
+        <a class="btn primary" href="{% url 'core:create' %}">Créer un projet</a>
+        <a class="btn secondary" href="{% url 'core:explore_free' %}">Exploration libre</a>
+      {% else %}
+        <a class="btn primary" href="{% url 'accounts:signup' %}">Commencer</a>
+      {% endif %}
+    </div>
+  </div>
+  <form class="search-form" method="get" action="{% url 'core:search' %}">
+    <input type="text" name="q" value="{{ search|default:'' }}" placeholder="Rechercher un jeu public..." aria-label="Rechercher un jeu public">
+    <button type="submit" class="btn">Rechercher</button>
+  </form>
+</section>
+
+<section class="public-projects">
+  <h2 class="section-title">Jeux publics</h2>
+  <div class="grid">
+    {% for p in projects %}
+    <div class="card">
+      <a href="{{ p.get_absolute_url }}">
+        <div class="card-thumb" style="background-image:url('{% if p.image_environment %}{{ p.image_environment.url }}{% else %}/static/core/images/default-thumbnail.jpg{% endif %}')"></div>
+        <div class="card-body">
+          <h3>{{ p.title|default:"Sans titre" }}</h3>
+          <p class="muted">{{ p.genre|default:"Non spécifié" }} — par {{ p.author.username }}</p>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+      <p class="no-projects muted">Aucun jeu public pour l'instant.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

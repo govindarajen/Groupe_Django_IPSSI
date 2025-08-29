@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% block title %}Créer un projet — GameForge{% endblock %}
+{% block content %}
+<div class="panel">
+  <h2>Nouveau projet</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-grid">
+      <label>Titre {{ form.title }}</label>
+      <label>Genre {{ form.genre }}</label>
+      <label>Ambiance {{ form.ambiance }}</label>
+      <label>Mots-clés {{ form.keywords }}</label>
+      <label>Références {{ form.references }}</label>
+      <label class="checkbox">
+        {{ form.is_public }} Rendre public
+      </label>
+    </div>
+    <button class="btn primary">Enregistrer</button>
+  </form>
+  <p class="muted">Après l’enregistrement, génère le contenu IA depuis le tableau de bord.</p>
+</div>
+{% endblock %}
